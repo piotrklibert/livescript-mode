@@ -350,6 +350,7 @@ called `livescript-compiled-buffer-name'."
 
 ;; String literals
 (defvar livescript-word-regexp "\\\\\\w+")
+(defvar livescript-word-list-regexp "<\\[[^]]*\\]>")
 (defvar livescript-string-regexp "\"\\([^\\]\\|\\\\.\\)*?\"\\|'\\([^\\]\\|\\\\.\\)*?'")
 
 ;; Instance variables (implicit this)
@@ -416,6 +417,7 @@ called `livescript-compiled-buffer-name'."
   ;; because otherwise the keyword "state" in the function
   ;; "state_entry" would be highlighted.
   `((,livescript-word-regexp . font-lock-string-face)
+    (,livescript-word-list-regexp . font-lock-string-face)
     (,livescript-string-regexp . font-lock-string-face)
     (,livescript-this-regexp . font-lock-variable-name-face)
     (,livescript-prototype-regexp . font-lock-variable-name-face)
