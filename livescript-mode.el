@@ -147,7 +147,7 @@
   "A LiveScript major mode."
   :group 'languages)
 
-(defcustom livescript-tab-width tab-width
+(defcustom livescript-tab-width 2
   "The tab width to use when indenting."
   :type 'integer
   :group 'livescript)
