@@ -1,11 +1,11 @@
-;;; coffee-mode.el --- Major mode to edit CoffeeScript files in Emacs
+;;; livescript-mode.el --- Major mode to edit LiveScript files in Emacs
 
 ;; Copyright (C) 2010 Chris Wanstrath
 
 ;; Version: 0.4.1
-;; Keywords: CoffeeScript major mode
+;; Keywords: LiveScript major mode
 ;; Author: Chris Wanstrath <chris@ozmm.org>
-;; URL: http://github.com/defunkt/coffee-mode
+;; URL: http://github.com/defunkt/livescript-mode
 
 ;; This file is not part of GNU Emacs.
 
@@ -140,208 +140,208 @@
 ;; Customizable Variables
 ;;
 
-(defconst coffee-mode-version "0.4.1"
-  "The version of `coffee-mode'.")
+(defconst livescript-mode-version "0.4.1"
+  "The version of `livescript-mode'.")
 
-(defgroup coffee nil
-  "A CoffeeScript major mode."
+(defgroup livescript nil
+  "A LiveScript major mode."
   :group 'languages)
 
-(defcustom coffee-tab-width tab-width
+(defcustom livescript-tab-width tab-width
   "The tab width to use when indenting."
   :type 'integer
-  :group 'coffee)
+  :group 'livescript)
 
-(defcustom coffee-command "coffee"
-  "The CoffeeScript command used for evaluating code."
+(defcustom livescript-command "livescript"
+  "The LiveScript command used for evaluating code."
   :type 'string
-  :group 'coffee)
+  :group 'livescript)
 
-(defcustom coffee-js-directory ""
+(defcustom livescript-js-directory ""
   "The directory for compiled JavaScript files output"
   :type 'string
-  :group 'coffee)
+  :group 'livescript)
 
-(defcustom js2coffee-command "js2coffee"
-  "The js2coffee command used for evaluating code."
+(defcustom js2livescript-command "js2livescript"
+  "The js2livescript command used for evaluating code."
   :type 'string
-  :group 'coffee)
+  :group 'livescript)
 
-(defcustom coffee-args-repl '("-i")
-  "The arguments to pass to `coffee-command' to start a REPL."
+(defcustom livescript-args-repl '("-i")
+  "The arguments to pass to `livescript-command' to start a REPL."
   :type 'list
-  :group 'coffee)
+  :group 'livescript)
 
-(defcustom coffee-args-compile '("-c")
-  "The arguments to pass to `coffee-command' to compile a file."
+(defcustom livescript-args-compile '("-c")
+  "The arguments to pass to `livescript-command' to compile a file."
   :type 'list
-  :group 'coffee)
+  :group 'livescript)
 
-(defcustom coffee-compiled-buffer-name "*coffee-compiled*"
-  "The name of the scratch buffer used for compiled CoffeeScript."
+(defcustom livescript-compiled-buffer-name "*livescript-compiled*"
+  "The name of the scratch buffer used for compiled LiveScript."
   :type 'string
-  :group 'coffee)
+  :group 'livescript)
 
-(defcustom coffee-compile-jump-to-error t
+(defcustom livescript-compile-jump-to-error t
   "Whether to jump to the first error if compilation fails.
-Since the coffee compiler does not always include a line number in
+Since the livescript compiler does not always include a line number in
 its error messages, this is not always possible."
   :type 'boolean
-  :group 'coffee)
+  :group 'livescript)
 
-(defcustom coffee-watch-buffer-name "*coffee-watch*"
+(defcustom livescript-watch-buffer-name "*livescript-watch*"
   "The name of the scratch buffer used when using the --watch flag
-with CoffeeScript."
+with LiveScript."
   :type 'string
-  :group 'coffee)
+  :group 'livescript)
 
-(defcustom coffee-mode-hook nil
-  "Hook called by `coffee-mode'.  Examples:
+(defcustom livescript-mode-hook nil
+  "Hook called by `livescript-mode'.  Examples:
 
-      ;; CoffeeScript uses two spaces.
+      ;; LiveScript uses two spaces.
       (make-local-variable 'tab-width)
       (set 'tab-width 2)
 
       ;; If you don't want your compiled files to be wrapped
-      (setq coffee-args-compile '(\"-c\" \"--bare\"))
+      (setq livescript-args-compile '(\"-c\" \"--bare\"))
 
       ;; Emacs key binding
-      (define-key coffee-mode-map [(meta r)] 'coffee-compile-buffer)
+      (define-key livescript-mode-map [(meta r)] 'livescript-compile-buffer)
 
       ;; Bleeding edge.
-      (setq coffee-command \"~/dev/coffee\")
+      (setq livescript-command \"~/dev/livescript\")
 
-      ;; Compile '.coffee' files on every save
+      ;; Compile '.livescript' files on every save
       (and (file-exists-p (buffer-file-name))
-           (file-exists-p (coffee-compiled-file-name))
-           (coffee-cos-mode t)))"
+           (file-exists-p (livescript-compiled-file-name))
+           (livescript-cos-mode t)))"
   :type 'hook
-  :group 'coffee)
+  :group 'livescript)
 
-(defvar coffee-mode-map
+(defvar livescript-mode-map
   (let ((map (make-sparse-keymap)))
     ;; key bindings
-    (define-key map (kbd "A-r") 'coffee-compile-buffer)
-    (define-key map (kbd "A-R") 'coffee-compile-region)
-    (define-key map (kbd "A-M-r") 'coffee-repl)
-    (define-key map [remap comment-dwim] 'coffee-comment-dwim)
-    (define-key map [remap newline-and-indent] 'coffee-newline-and-indent)
-    (define-key map "\C-m" 'coffee-newline-and-indent)
-    (define-key map "\C-c\C-o\C-s" 'coffee-cos-mode)
-    (define-key map "\177" 'coffee-dedent-line-backspace)
-    (define-key map (kbd "C-c C-<") 'coffee-indent-shift-left)
-    (define-key map (kbd "C-c C->") 'coffee-indent-shift-right)
+    (define-key map (kbd "A-r") 'livescript-compile-buffer)
+    (define-key map (kbd "A-R") 'livescript-compile-region)
+    (define-key map (kbd "A-M-r") 'livescript-repl)
+    (define-key map [remap comment-dwim] 'livescript-comment-dwim)
+    (define-key map [remap newline-and-indent] 'livescript-newline-and-indent)
+    (define-key map "\C-m" 'livescript-newline-and-indent)
+    (define-key map "\C-c\C-o\C-s" 'livescript-cos-mode)
+    (define-key map "\177" 'livescript-dedent-line-backspace)
+    (define-key map (kbd "C-c C-<") 'livescript-indent-shift-left)
+    (define-key map (kbd "C-c C->") 'livescript-indent-shift-right)
     map)
-  "Keymap for CoffeeScript major mode.")
+  "Keymap for LiveScript major mode.")
 
 ;;
 ;; Commands
 ;;
 
-(defun coffee-repl ()
-  "Launch a CoffeeScript REPL using `coffee-command' as an inferior mode."
+(defun livescript-repl ()
+  "Launch a LiveScript REPL using `livescript-command' as an inferior mode."
   (interactive)
 
-  (unless (comint-check-proc "*CoffeeREPL*")
+  (unless (comint-check-proc "*LiveScriptREPL*")
     (set-buffer
-     (apply 'make-comint "CoffeeREPL"
+     (apply 'make-comint "LiveScriptREPL"
             "env"
-            nil (append (list "NODE_NO_READLINE=1" coffee-command) coffee-args-repl))))
+            nil (append (list "NODE_NO_READLINE=1" livescript-command) livescript-args-repl))))
 
-  (pop-to-buffer "*CoffeeREPL*"))
+  (pop-to-buffer "*LiveScriptREPL*"))
 
-(defun coffee-compiled-file-name (&optional filename)
+(defun livescript-compiled-file-name (&optional filename)
   (setq working-on-file (expand-file-name (or filename (buffer-file-name))))
-  (unless (string= coffee-js-directory "")
-      (setq working-on-file (expand-file-name (concat (file-name-directory working-on-file) coffee-js-directory (file-name-nondirectory working-on-file)))))
-  "Returns the name of the JavaScript file compiled from a CoffeeScript file.
+  (unless (string= livescript-js-directory "")
+      (setq working-on-file (expand-file-name (concat (file-name-directory working-on-file) livescript-js-directory (file-name-nondirectory working-on-file)))))
+  "Returns the name of the JavaScript file compiled from a LiveScript file.
 If FILENAME is omitted, the current buffer's file name is used."
   (concat (file-name-sans-extension working-on-file) ".js"))
 
-(defun coffee-compile-file ()
+(defun livescript-compile-file ()
   "Compiles and saves the current file to disk in a file of the same
 base name, with extension `.js'.  Subsequent runs will overwrite the
 file.
 
 If there are compilation errors, point is moved to the first
-(see `coffee-compile-jump-to-error')."
+(see `livescript-compile-jump-to-error')."
   (interactive)
-  (let ((compiler-output (shell-command-to-string (coffee-command-compile (buffer-file-name)))))
+  (let ((compiler-output (shell-command-to-string (livescript-command-compile (buffer-file-name)))))
     (if (string= compiler-output "")
-        (message "Compiled and saved %s" (coffee-compiled-file-name))
+        (message "Compiled and saved %s" (livescript-compiled-file-name))
       (let* ((msg (car (split-string compiler-output "[\n\r]+")))
              (line (and (string-match "on line \\([0-9]+\\)" msg)
                         (string-to-number (match-string 1 msg)))))
         (message msg)
-        (when (and coffee-compile-jump-to-error line (> line 0))
+        (when (and livescript-compile-jump-to-error line (> line 0))
           (goto-char (point-min))
           (forward-line (1- line)))))))
 
-(defun coffee-compile-buffer ()
+(defun livescript-compile-buffer ()
   "Compiles the current buffer and displays the JavaScript in a buffer
-called `coffee-compiled-buffer-name'."
+called `livescript-compiled-buffer-name'."
   (interactive)
   (save-excursion
-    (coffee-compile-region (point-min) (point-max))))
+    (livescript-compile-region (point-min) (point-max))))
 
-(defun coffee-compile-region (start end)
+(defun livescript-compile-region (start end)
   "Compiles a region and displays the JavaScript in a buffer called
-`coffee-compiled-buffer-name'."
+`livescript-compiled-buffer-name'."
   (interactive "r")
 
-  (let ((buffer (get-buffer coffee-compiled-buffer-name)))
+  (let ((buffer (get-buffer livescript-compiled-buffer-name)))
     (when buffer
       (with-current-buffer buffer
         (erase-buffer))))
 
-  (apply (apply-partially 'call-process-region start end coffee-command nil
-                          (get-buffer-create coffee-compiled-buffer-name)
+  (apply (apply-partially 'call-process-region start end livescript-command nil
+                          (get-buffer-create livescript-compiled-buffer-name)
                           nil)
-         (append coffee-args-compile (list "-s" "-p")))
+         (append livescript-args-compile (list "-s" "-p")))
 
-  (let ((buffer (get-buffer coffee-compiled-buffer-name)))
+  (let ((buffer (get-buffer livescript-compiled-buffer-name)))
     (display-buffer buffer)
     (with-current-buffer buffer
       (let ((buffer-file-name "tmp.js")) (set-auto-mode)))))
 
-(defun coffee-js2coffee-replace-region (start end)
-  "Convert JavaScript in the region into CoffeeScript."
+(defun livescript-js2livescript-replace-region (start end)
+  "Convert JavaScript in the region into LiveScript."
   (interactive "r")
 
-  (let ((buffer (get-buffer coffee-compiled-buffer-name)))
+  (let ((buffer (get-buffer livescript-compiled-buffer-name)))
     (when buffer
       (kill-buffer buffer)))
 
   (call-process-region start end
-                       js2coffee-command nil
+                       js2livescript-command nil
                        (current-buffer))
   (delete-region start end))
 
-(defun coffee-version ()
-  "Show the `coffee-mode' version in the echo area."
+(defun livescript-version ()
+  "Show the `livescript-mode' version in the echo area."
   (interactive)
-  (message (concat "coffee-mode version " coffee-mode-version)))
+  (message (concat "livescript-mode version " livescript-mode-version)))
 
-(defun coffee-watch (dir-or-file)
-  "Run `coffee-run-cmd' with the --watch flag on a directory or file."
+(defun livescript-watch (dir-or-file)
+  "Run `livescript-run-cmd' with the --watch flag on a directory or file."
   (interactive "fDirectory or File: ")
-  (let ((coffee-compiled-buffer-name coffee-watch-buffer-name)
-        (args (mapconcat 'identity (append coffee-args-compile (list "--watch" (expand-file-name dir-or-file))) " ")))
-    (coffee-run-cmd args)))
+  (let ((livescript-compiled-buffer-name livescript-watch-buffer-name)
+        (args (mapconcat 'identity (append livescript-args-compile (list "--watch" (expand-file-name dir-or-file))) " ")))
+    (livescript-run-cmd args)))
 
 ;;
 ;; Menubar
 ;;
 
-(easy-menu-define coffee-mode-menu coffee-mode-map
-  "Menu for CoffeeScript mode"
-  '("CoffeeScript"
-    ["Compile File" coffee-compile-file]
-    ["Compile Buffer" coffee-compile-buffer]
-    ["Compile Region" coffee-compile-region]
-    ["REPL" coffee-repl]
+(easy-menu-define livescript-mode-menu livescript-mode-map
+  "Menu for LiveScript mode"
+  '("LiveScript"
+    ["Compile File" livescript-compile-file]
+    ["Compile Buffer" livescript-compile-buffer]
+    ["Compile Region" livescript-compile-region]
+    ["REPL" livescript-repl]
     "---"
-    ["Version" coffee-version]
+    ["Version" livescript-version]
     ))
 
 ;;
@@ -349,86 +349,86 @@ called `coffee-compiled-buffer-name'."
 ;;
 
 ;; String literals
-(defvar coffee-string-regexp "\"\\([^\\]\\|\\\\.\\)*?\"\\|'\\([^\\]\\|\\\\.\\)*?'")
+(defvar livescript-string-regexp "\"\\([^\\]\\|\\\\.\\)*?\"\\|'\\([^\\]\\|\\\\.\\)*?'")
 
 ;; Instance variables (implicit this)
-(defvar coffee-this-regexp "@\\(\\w\\|_\\)*\\|this")
+(defvar livescript-this-regexp "@\\(\\w\\|_\\)*\\|this")
 
 ;; Prototype::access
-(defvar coffee-prototype-regexp "\\(\\(\\w\\|\\.\\|_\\| \\|$\\)+?\\)::\\(\\(\\w\\|\\.\\|_\\| \\|$\\)+?\\):")
+(defvar livescript-prototype-regexp "\\(\\(\\w\\|\\.\\|_\\| \\|$\\)+?\\)::\\(\\(\\w\\|\\.\\|_\\| \\|$\\)+?\\):")
 
 ;; Assignment
-(defvar coffee-assign-regexp "\\(\\(\\w\\|\\.\\|_\\|$\\)+?\s*\\):")
+(defvar livescript-assign-regexp "\\(\\(\\w\\|\\.\\|_\\|$\\)+?\s*\\):")
 
 ;; Local Assignment
-(defvar coffee-local-assign-regexp "\\(\\(_\\|\\w\\|\\$\\)+\\)\s+=")
+(defvar livescript-local-assign-regexp "\\(\\(_\\|\\w\\|\\$\\)+\\)\s+=")
 
 ;; Lambda
-(defvar coffee-lambda-regexp "\\((.+)\\)?\\s *\\(->\\|=>\\)")
+(defvar livescript-lambda-regexp "\\((.+)\\)?\\s *\\(->\\|=>\\)")
 
 ;; Namespaces
-(defvar coffee-namespace-regexp "\\b\\(class\\s +\\(\\S +\\)\\)\\b")
+(defvar livescript-namespace-regexp "\\b\\(class\\s +\\(\\S +\\)\\)\\b")
 
 ;; Booleans
-(defvar coffee-boolean-regexp "\\b\\(true\\|false\\|yes\\|no\\|on\\|off\\|null\\|undefined\\)\\b")
+(defvar livescript-boolean-regexp "\\b\\(true\\|false\\|yes\\|no\\|on\\|off\\|null\\|undefined\\)\\b")
 
 ;; Regular Expressions
-(defvar coffee-regexp-regexp "\\/\\(\\\\.\\|\\[\\(\\\\.\\|.\\)+?\\]\\|[^/
+(defvar livescript-regexp-regexp "\\/\\(\\\\.\\|\\[\\(\\\\.\\|.\\)+?\\]\\|[^/
 ]\\)+?\\/")
 
 ;; JavaScript Keywords
-(defvar coffee-js-keywords
+(defvar livescript-js-keywords
       '("if" "else" "new" "return" "try" "catch"
         "finally" "throw" "break" "continue" "for" "in" "while"
         "delete" "instanceof" "typeof" "switch" "super" "extends"
         "class" "until" "loop"))
 
 ;; Reserved keywords either by JS or CS.
-(defvar coffee-js-reserved
+(defvar livescript-js-reserved
       '("case" "default" "do" "function" "var" "void" "with"
         "const" "let" "debugger" "enum" "export" "import" "native"
         "__extends" "__hasProp"))
 
-;; CoffeeScript keywords.
-(defvar coffee-cs-keywords
+;; LiveScript keywords.
+(defvar livescript-cs-keywords
       '("then" "unless" "and" "or" "is" "own"
         "isnt" "not" "of" "by" "when"))
 
-;; Iced CoffeeScript keywords
-(defvar iced-coffee-cs-keywords
+;; Iced LiveScript keywords
+(defvar iced-livescript-cs-keywords
   '("await" "defer"))
 
 ;; Regular expression combining the above three lists.
-(defvar coffee-keywords-regexp
+(defvar livescript-keywords-regexp
   ;; keywords can be member names.
   (concat "[^.]"
-	  (regexp-opt (append coffee-js-reserved
-			      coffee-js-keywords
-			      coffee-cs-keywords
-			      iced-coffee-cs-keywords) 'words)))
+	  (regexp-opt (append livescript-js-reserved
+			      livescript-js-keywords
+			      livescript-cs-keywords
+			      iced-livescript-cs-keywords) 'words)))
 
 
 ;; Create the list for font-lock. Each class of keyword is given a
 ;; particular face.
-(defvar coffee-font-lock-keywords
-  ;; *Note*: order below matters. `coffee-keywords-regexp' goes last
+(defvar livescript-font-lock-keywords
+  ;; *Note*: order below matters. `livescript-keywords-regexp' goes last
   ;; because otherwise the keyword "state" in the function
   ;; "state_entry" would be highlighted.
-  `((,coffee-string-regexp . font-lock-string-face)
-    (,coffee-this-regexp . font-lock-variable-name-face)
-    (,coffee-prototype-regexp . font-lock-variable-name-face)
-    (,coffee-assign-regexp . font-lock-type-face)
-    (,coffee-local-assign-regexp 1 font-lock-variable-name-face)
-    (,coffee-regexp-regexp . font-lock-constant-face)
-    (,coffee-boolean-regexp . font-lock-constant-face)
-    (,coffee-lambda-regexp . (2 font-lock-function-name-face))
-    (,coffee-keywords-regexp 1 font-lock-keyword-face)))
+  `((,livescript-string-regexp . font-lock-string-face)
+    (,livescript-this-regexp . font-lock-variable-name-face)
+    (,livescript-prototype-regexp . font-lock-variable-name-face)
+    (,livescript-assign-regexp . font-lock-type-face)
+    (,livescript-local-assign-regexp 1 font-lock-variable-name-face)
+    (,livescript-regexp-regexp . font-lock-constant-face)
+    (,livescript-boolean-regexp . font-lock-constant-face)
+    (,livescript-lambda-regexp . (2 font-lock-function-name-face))
+    (,livescript-keywords-regexp 1 font-lock-keyword-face)))
 
 ;;
 ;; Helper Functions
 ;;
 
-(defun coffee-comment-dwim (arg)
+(defun livescript-comment-dwim (arg)
   "Comment or uncomment current line or region in a smart way.
 For details, see `comment-dwim'."
   (interactive "*P")
@@ -436,30 +436,30 @@ For details, see `comment-dwim'."
   (let ((deactivate-mark nil) (comment-start "#") (comment-end ""))
     (comment-dwim arg)))
 
-(defun coffee-command-compile (file-name)
-  "Run `coffee-command' to compile FILE."
+(defun livescript-command-compile (file-name)
+  "Run `livescript-command' to compile FILE."
   (let (
 	(full-file-name
 	 (expand-file-name file-name))
 	(output-directory
-	 (concat " -o " (file-name-directory (expand-file-name file-name)) coffee-js-directory)))
-    (mapconcat 'identity (append (list coffee-command) coffee-args-compile (list output-directory) (list full-file-name)) " ")))
+	 (concat " -o " (file-name-directory (expand-file-name file-name)) livescript-js-directory)))
+    (mapconcat 'identity (append (list livescript-command) livescript-args-compile (list output-directory) (list full-file-name)) " ")))
 
-(defun coffee-run-cmd (args)
-  "Run `coffee-command' with the given arguments, and display the
+(defun livescript-run-cmd (args)
+  "Run `livescript-command' with the given arguments, and display the
 output in a compilation buffer."
   (interactive "sArguments: ")
   (let ((compilation-buffer-name-function (lambda (this-mode)
-                                            (generate-new-buffer-name coffee-compiled-buffer-name))))
-    (compile (concat coffee-command " " args))))
+                                            (generate-new-buffer-name livescript-compiled-buffer-name))))
+    (compile (concat livescript-command " " args))))
 
 ;;
 ;; imenu support
 ;;
 
 ;; This is a pretty naive but workable way of doing it. First we look
-;; for any lines that starting with `coffee-assign-regexp' that include
-;; `coffee-lambda-regexp' then add those tokens to the list.
+;; for any lines that starting with `livescript-assign-regexp' that include
+;; `livescript-lambda-regexp' then add those tokens to the list.
 ;;
 ;; Should cover cases like these:
 ;;
@@ -469,7 +469,7 @@ output in a compilation buffer."
 ;;   print('potion')
 ;;
 ;; Next we look for any line that starts with `class' or
-;; `coffee-assign-regexp' followed by `{` and drop into a
+;; `livescript-assign-regexp' followed by `{` and drop into a
 ;; namespace. This means we search one indentation level deeper for
 ;; more assignments and add them to the alist prefixed with the
 ;; namespace name.
@@ -493,7 +493,7 @@ output in a compilation buffer."
 ;;   button:  -> 'OK'
 ;; }
 
-(defun coffee-imenu-create-index ()
+(defun livescript-imenu-create-index ()
   "Create an imenu index of all methods in the buffer."
   (interactive)
 
@@ -506,11 +506,11 @@ output in a compilation buffer."
     (while (re-search-forward
             (concat "^\\(\\s *\\)"
                     "\\("
-                      coffee-assign-regexp
+                      livescript-assign-regexp
                       ".+?"
-                      coffee-lambda-regexp
+                      livescript-lambda-regexp
                     "\\|"
-                      coffee-namespace-regexp
+                      livescript-namespace-regexp
                     "\\)")
             (point-max)
             t)
@@ -561,28 +561,28 @@ output in a compilation buffer."
 
 ;;; The theory is explained in the README.
 
-(defun coffee-indent-line ()
-  "Indent current line as CoffeeScript."
+(defun livescript-indent-line ()
+  "Indent current line as LiveScript."
   (interactive)
 
   (if (= (point) (point-at-bol))
       (insert-tab)
     (save-excursion
-      (let ((prev-indent (coffee-previous-indent))
+      (let ((prev-indent (livescript-previous-indent))
             (cur-indent (current-indentation)))
         ;; Shift one column to the left
         (beginning-of-line)
         (insert-tab)
 
         (when (= (point-at-bol) (point))
-          (forward-char coffee-tab-width))
+          (forward-char livescript-tab-width))
 
         ;; We're too far, remove all indentation.
-        (when (> (- (current-indentation) prev-indent) coffee-tab-width)
+        (when (> (- (current-indentation) prev-indent) livescript-tab-width)
           (backward-to-indentation 0)
           (delete-region (point-at-bol) (point)))))))
 
-(defun coffee-previous-indent ()
+(defun livescript-previous-indent ()
   "Return the indentation level of the previous non-blank line."
   (save-excursion
     (forward-line -1)
@@ -592,7 +592,7 @@ output in a compilation buffer."
         (while (and (looking-at "^[ \t]*$") (not (bobp))) (forward-line -1))
         (current-indentation)))))
 
-(defun coffee-newline-and-indent ()
+(defun livescript-newline-and-indent ()
   "Insert a newline and indent it to the same level as the previous line."
   (interactive)
 
@@ -602,20 +602,20 @@ output in a compilation buffer."
   (let ((prev-indent (current-indentation)) (indent-next nil))
     (delete-horizontal-space t)
     (newline)
-    (insert-tab (/ prev-indent coffee-tab-width))
+    (insert-tab (/ prev-indent livescript-tab-width))
 
     ;; We need to insert an additional tab because the last line was special.
-    (when (coffee-line-wants-indent)
+    (when (livescript-line-wants-indent)
       (insert-tab)))
 
   ;; Last line was a comment so this one should probably be,
   ;; too. Makes it easy to write multi-line comments (like the one I'm
   ;; writing right now).
-  (when (coffee-previous-line-is-comment)
+  (when (livescript-previous-line-is-comment)
     (insert "# ")))
 
-(defun coffee-dedent-line-backspace (arg)
-  "Unindent to increment of `coffee-tab-width' with ARG==1 when
+(defun livescript-dedent-line-backspace (arg)
+  "Unindent to increment of `livescript-tab-width' with ARG==1 when
 called from first non-blank char of line.
 
 Delete ARG spaces if ARG!=1."
@@ -625,10 +625,10 @@ Delete ARG spaces if ARG!=1."
                         (back-to-indentation)
                         (point)))
            (not (bolp)))
-      (let ((extra-space-count (% (current-column) coffee-tab-width)))
+      (let ((extra-space-count (% (current-column) livescript-tab-width)))
         (backward-delete-char-untabify
          (if (zerop extra-space-count)
-             coffee-tab-width
+             livescript-tab-width
            extra-space-count)))
     (backward-delete-char-untabify arg)))
 
@@ -637,19 +637,19 @@ Delete ARG spaces if ARG!=1."
 ;; line starts with `class', for instance, you're probably going to
 ;; want to indent the next line.
 
-(defvar coffee-indenters-bol '("class" "for" "if" "try" "while")
+(defvar livescript-indenters-bol '("class" "for" "if" "try" "while")
   "Keywords or syntax whose presence at the start of a line means the
 next line should probably be indented.")
 
-(defun coffee-indenters-bol-regexp ()
-  "Builds a regexp out of `coffee-indenters-bol' words."
-  (regexp-opt coffee-indenters-bol 'words))
+(defun livescript-indenters-bol-regexp ()
+  "Builds a regexp out of `livescript-indenters-bol' words."
+  (regexp-opt livescript-indenters-bol 'words))
 
-(defvar coffee-indenters-eol '(?> ?{ ?\[)
+(defvar livescript-indenters-eol '(?> ?{ ?\[)
   "Single characters at the end of a line that mean the next line
 should probably be indented.")
 
-(defun coffee-line-wants-indent ()
+(defun livescript-line-wants-indent ()
   "Return t if the current line should be indented relative to the
 previous line."
   (interactive)
@@ -662,7 +662,7 @@ previous line."
 
       ;; If the next few characters match one of our magic indenter
       ;; keywords, we want to indent the line we were on originally.
-      (when (looking-at (coffee-indenters-bol-regexp))
+      (when (looking-at (livescript-indenters-bol-regexp))
         (setq indenter-at-bol t))
 
       ;; If that didn't match, go to the back of the line and check to
@@ -672,7 +672,7 @@ previous line."
         (end-of-line)
 
         ;; Optimized for speed - checks only the last character.
-        (let ((indenters coffee-indenters-eol))
+        (let ((indenters livescript-indenters-eol))
           (while indenters
             (if (and (char-before) (/= (char-before) (car indenters)))
                 (setq indenters (cdr indenters))
@@ -682,20 +682,20 @@ previous line."
       ;; If we found an indenter, return `t'.
       (or indenter-at-bol indenter-at-eol))))
 
-(defun coffee-previous-line-is-comment ()
-  "Return t if the previous line is a CoffeeScript comment."
+(defun livescript-previous-line-is-comment ()
+  "Return t if the previous line is a LiveScript comment."
   (save-excursion
     (forward-line -1)
-    (coffee-line-is-comment)))
+    (livescript-line-is-comment)))
 
-(defun coffee-line-is-comment ()
-  "Return t if the current line is a CoffeeScript comment."
+(defun livescript-line-is-comment ()
+  "Return t if the current line is a LiveScript comment."
   (save-excursion
     (backward-to-indentation 0)
     (= (char-after) (string-to-char "#"))))
 
 
-;; (defun coffee-quote-syntax (n)
+;; (defun livescript-quote-syntax (n)
 ;;   "Put `syntax-table' property correctly on triple quote.
 ;; Used for syntactic keywords.  N is the match number (1, 2 or 3)."
 ;;   ;; From python-mode...
@@ -738,8 +738,8 @@ previous line."
 ;;      ;; nil, which is OK.
 ;;      )))
 
-(defun coffee-indent-shift-amount (start end dir)
-  "Compute distance to the closest increment of `coffee-tab-width'."
+(defun livescript-indent-shift-amount (start end dir)
+  "Compute distance to the closest increment of `livescript-tab-width'."
   (let ((min most-positive-fixnum) rem)
     (save-excursion
       (goto-char start)
@@ -747,17 +747,17 @@ previous line."
         (let ((current (current-indentation)))
           (when (< current min) (setq min current)))
         (forward-line))
-      (setq rem (% min coffee-tab-width))
+      (setq rem (% min livescript-tab-width))
       (if (zerop rem)
-          coffee-tab-width
+          livescript-tab-width
         (cond ((eq dir 'left) rem)
-              ((eq dir 'right) (- coffee-tab-width rem))
+              ((eq dir 'right) (- livescript-tab-width rem))
               (t 0))))))
 
-(defun coffee-indent-shift-left (start end &optional count)
+(defun livescript-indent-shift-left (start end &optional count)
   "Shift lines contained in region START END by COUNT columns to the left.
 If COUNT is not given, indents to the closest increment of
-`coffee-tab-width'. If region isn't active, the current line is
+`livescript-tab-width'. If region isn't active, the current line is
 shifted. The shifted region includes the lines in which START and
 END lie. An error is signaled if any lines in the region are
 indented less than COUNT columns."
@@ -766,7 +766,7 @@ indented less than COUNT columns."
        (list (region-beginning) (region-end) current-prefix-arg)
      (list (line-beginning-position) (line-end-position) current-prefix-arg)))
   (let ((amount (if count (prefix-numeric-value count)
-                  (coffee-indent-shift-amount start end 'left))))
+                  (livescript-indent-shift-amount start end 'left))))
     (when (> amount 0)
       (let (deactivate-mark)
         (save-excursion
@@ -781,10 +781,10 @@ indented less than COUNT columns."
 
 (add-to-list 'debug-ignored-errors "^Can't shift all lines enough")
 
-(defun coffee-indent-shift-right (start end &optional count)
+(defun livescript-indent-shift-right (start end &optional count)
   "Shift lines contained in region START END by COUNT columns to the right.
 if COUNT is not given, indents to the closest increment of
-`coffee-tab-width'. If region isn't active, the current line is
+`livescript-tab-width'. If region isn't active, the current line is
 shifted. The shifted region includes the lines in which START and
 END lie."
   (interactive
@@ -793,14 +793,14 @@ END lie."
      (list (line-beginning-position) (line-end-position) current-prefix-arg)))
   (let (deactivate-mark
         (amount (if count (prefix-numeric-value count)
-                  (coffee-indent-shift-amount start end 'right))))
+                  (livescript-indent-shift-amount start end 'right))))
     (indent-rigidly start end amount)))
 
 ;;
 ;; Define Major Mode
 ;;
 
-(defun coffee-block-comment-delimiter (match)
+(defun livescript-block-comment-delimiter (match)
   (progn
     (goto-char match)
     (beginning-of-line)
@@ -822,7 +822,7 @@ END lie."
 ;;     ###
 ;; examples of non-block comments:
 ;;   #### foobar
-(defun coffee-propertize-function (start end)
+(defun livescript-propertize-function (start end)
   ;; return if we don't have anything to parse
   (unless (>= start end)
     (save-excursion
@@ -831,30 +831,30 @@ END lie."
         (let ((match (re-search-forward "^[[:space:]]*###\\([[:space:]]+.*\\)?$" end t)))
           (if match
               (progn
-                (coffee-block-comment-delimiter match)
+                (livescript-block-comment-delimiter match)
                 (goto-char match)
                 (next-line)
-                (coffee-propertize-function (point) end))))))))
+                (livescript-propertize-function (point) end))))))))
 
 ;;;###autoload
-(define-derived-mode coffee-mode fundamental-mode
-  "Coffee"
-  "Major mode for editing CoffeeScript."
+(define-derived-mode livescript-mode fundamental-mode
+  "LiveScript"
+  "Major mode for editing LiveScript."
 
   ;; code for syntax highlighting
-  (setq font-lock-defaults '((coffee-font-lock-keywords)))
+  (setq font-lock-defaults '((livescript-font-lock-keywords)))
 
   ;; treat "_" as part of a word
-  (modify-syntax-entry ?_ "w" coffee-mode-syntax-table)
+  (modify-syntax-entry ?_ "w" livescript-mode-syntax-table)
 
   ;; perl style comment: "# ..."
-  (modify-syntax-entry ?# "< b" coffee-mode-syntax-table)
-  (modify-syntax-entry ?\n "> b" coffee-mode-syntax-table)
+  (modify-syntax-entry ?# "< b" livescript-mode-syntax-table)
+  (modify-syntax-entry ?\n "> b" livescript-mode-syntax-table)
   (make-local-variable 'comment-start)
   (setq comment-start "#")
 
   ;; single quote strings
-  (modify-syntax-entry ?' "\"" coffee-mode-syntax-table)
+  (modify-syntax-entry ?' "\"" livescript-mode-syntax-table)
 
   ;; (setq font-lock-syntactic-keywords
   ;;       ;; Make outer chars of matching triple-quote sequences into generic
@@ -862,19 +862,19 @@ END lie."
   ;;       ;; First avoid a sequence preceded by an odd number of backslashes.
   ;;       `((,(concat "\\(?:^\\|[^\\]\\(?:\\\\.\\)*\\)" ;Prefix.
   ;;                   "\\(?:\\('\\)\\('\\)\\('\\)\\|\\(?1:\"\\)\\(?2:\"\\)\\(?3:\"\\)\\)")
-  ;;          (1 (coffee-quote-syntax 1) nil lax)
-  ;;          (2 (coffee-quote-syntax 2))
-  ;;          (3 (coffee-quote-syntax 3)))))
+  ;;          (1 (livescript-quote-syntax 1) nil lax)
+  ;;          (2 (livescript-quote-syntax 2))
+  ;;          (3 (livescript-quote-syntax 3)))))
 
   ;; indentation
   (make-local-variable 'indent-line-function)
-  (setq indent-line-function 'coffee-indent-line)
-  (set (make-local-variable 'tab-width) coffee-tab-width)
-  (set (make-local-variable 'syntax-propertize-function) 'coffee-propertize-function)
+  (setq indent-line-function 'livescript-indent-line)
+  (set (make-local-variable 'tab-width) livescript-tab-width)
+  (set (make-local-variable 'syntax-propertize-function) 'livescript-propertize-function)
 
   ;; imenu
   (make-local-variable 'imenu-create-index-function)
-  (setq imenu-create-index-function 'coffee-imenu-create-index)
+  (setq imenu-create-index-function 'livescript-imenu-create-index)
 
   ;; no tabs
   (setq indent-tabs-mode nil))
@@ -883,32 +883,30 @@ END lie."
 ;; Compile-on-Save minor mode
 ;;
 
-(defvar coffee-cos-mode-line " CoS")
-(make-variable-buffer-local 'coffee-cos-mode-line)
+(defvar livescript-cos-mode-line " LS")
+(make-variable-buffer-local 'livescript-cos-mode-line)
 
-(define-minor-mode coffee-cos-mode
-  "Toggle compile-on-save for coffee-mode.
+(define-minor-mode livescript-cos-mode
+  "Toggle compile-on-save for livescript-mode.
 
-Add `'(lambda () (coffee-cos-mode t))' to `coffee-mode-hook' to turn
+Add `'(lambda () (livescript-cos-mode t))' to `livescript-mode-hook' to turn
 it on by default."
-  :group 'coffee-cos :lighter coffee-cos-mode-line
+  :group 'livescript-cos :lighter livescript-cos-mode-line
   (cond
-   (coffee-cos-mode
-    (add-hook 'after-save-hook 'coffee-compile-file nil t))
+   (livescript-cos-mode
+    (add-hook 'after-save-hook 'livescript-compile-file nil t))
    (t
-    (remove-hook 'after-save-hook 'coffee-compile-file t))))
+    (remove-hook 'after-save-hook 'livescript-compile-file t))))
 
-(provide 'coffee-mode)
+(provide 'livescript-mode)
 
 ;;
 ;; On Load
 ;;
 
-;; Run coffee-mode for files ending in .coffee.
+;; Run livescript-mode for files ending in .livescript.
 ;;;###autoload
-(add-to-list 'auto-mode-alist '("\\.coffee\\'" . coffee-mode))
+(add-to-list 'auto-mode-alist '("\\.ls\\'" . livescript-mode))
 ;;;###autoload
-(add-to-list 'auto-mode-alist '("\\.iced\\'" . coffee-mode))
-;;;###autoload
-(add-to-list 'auto-mode-alist '("Cakefile\\'" . coffee-mode))
-;;; coffee-mode.el ends here
+(add-to-list 'auto-mode-alist '("Slakefile\\'" . livescript-mode))
+;;; livescript-mode.el ends here
